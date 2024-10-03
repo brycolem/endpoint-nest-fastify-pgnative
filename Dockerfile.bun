@@ -1,0 +1,26 @@
+FROM node:20-alpine AS build
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM oven/bun:alpine
+WORKDIR /app
+
+RUN apk update && apk add shadow
+
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/dist ./dist
+
+RUN bun install --production
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+EXPOSE 8001
+
+CMD ["bun", "dist/main.js"]

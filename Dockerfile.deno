@@ -1,0 +1,22 @@
+FROM node:20-alpine AS build
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM denoland/deno:alpine-1.46.3
+WORKDIR /app
+
+COPY --from=build /app /app
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+EXPOSE 8001
+
+CMD ["deno", "--allow-net", "dist/main.js"]
