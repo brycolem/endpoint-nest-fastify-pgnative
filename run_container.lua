@@ -54,9 +54,9 @@ if not build_success then
 end
 
 local run_command = string.format(
-    "podman run -d -p 8001:8001 --network bench-network " ..
+    "podman run -d -p 8001:8001 --network=host " ..
     "-e DATABASE=%q -e DB_USER=%q -e DB_PWD=%q " ..
-    "--replace --name %s %s:latest",
+    "--ulimit nofile=65536:65536 --replace --name %s %s:latest",
     DATABASE, DB_USER, DB_PWD, selected_image, selected_image
 )
 

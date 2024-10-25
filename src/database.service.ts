@@ -9,7 +9,7 @@ export class DatabaseService {
     constructor() {
         const user = process.env.DB_USER;
         const password = process.env.DB_PWD;
-        const host = process.env.DB_HOST || 'postgres_bench';
+        const host = process.env.DB_HOST || 'localhost';
         const database = process.env.DATABASE;
         const port = process.env.DB_PORT || '5432';
 
